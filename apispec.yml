@@ -1,0 +1,338 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "POS API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080"
+    }
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "description": "List All Products",
+        "summary": "List All Products",
+        "tags": [
+          "Product List All"
+        ],
+          "security": [
+               {
+                  "ArticleAuth":[]
+               }
+            ],
+        "responses": {
+          "200": {
+            "description": "Success get all products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/Products"
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Create new Product",
+        "summary": "Create New Product",
+        "tags": [
+          "Product Create"
+        ],
+          "security": [
+               {
+                  "ArticleAuth":[]
+               }
+            ],
+        "requestBody":{
+          "content": {
+            "application/json":{
+              "schema":{
+                                                    "$ref": "#/components/schemas/CreatOrUpdateArticle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success create new product",
+            "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "number"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Products"
+                          }
+                      }
+                    }
+                  }
+                }
+            }
+            }
+            }
+          }
+      
+    },
+    "/products/{product_id}": {
+      "get": {
+        "description": "Get Single Products",
+        "summary": "Get Single Products",
+        "tags": [
+          "Product Get"
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "description": "Article Id",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+          "security": [
+               {
+                  "ArticleAuth":[]
+               }
+            ],
+        "responses": {
+          "200": {
+            "description": "Success get 1 product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/Products"
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+        "delete": {
+        "description": "Delete Single Products",
+        "summary": "Delete Single Products",
+        "tags": [
+          "Product Delete"
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "description": "Article Id",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+          "security": [
+               {
+                  "ArticleAuth":[]
+               }
+            ],
+        "responses": {
+          "200": {
+            "description": "Success Delete 1 product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/Products"
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+       "put": {
+        "description": "Update Single  Products",
+        "summary": "Update Single Products",
+        "tags": [
+          "Product Update"
+        ],
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "description": "Article Id",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+          "security": [
+               {
+                  "ArticleAuth":[]
+               }
+            ],
+        "requestBody": {
+          "content": {
+            "application/json":{
+              "schema":{
+                                       "$ref": "#/components/schemas/CreatOrUpdateArticle"
+              }
+              }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success Update  product",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "number"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                          "$ref": "#/components/schemas/Products"
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      
+    },
+  
+  },
+  "components": {
+  "securitySchemes": {
+    "articleAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "X-API-Key",
+      "description": "Authentication for Article API"
+    }
+  },
+      "schemas": {
+          "Products": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                   "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "price_net": {
+                            "type": "integer"
+                          },
+                          "price_gross": {
+                            "type": "integer"
+                          },
+                           "stock_qty": {
+                              "type": "integer"
+                           },
+                            "description": {
+                              "type": "string"
+                           },
+                           "image": {
+                              "type": "string"
+                           },
+                           "exp_date":{
+                              "type": "string"
+                           },
+                            "created_at":{
+                              "type": "string"
+                           }
+                        }
+                }
+              }
+            }
+          },
+          "CreatOrUpdateArticle": {
+    "type": "object",
+   "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "price_net": {
+                            "type": "integer"
+                          },
+                          "price_gross": {
+                            "type": "integer"
+                          },
+                           "stock_qty": {
+                              "type": "integer"
+                           },
+                            "description": {
+                              "type": "string"
+                           },
+                           "image": {
+                              "type": "string"
+                           },
+                           "exp_date":{
+                              "type": "string"
+                           }
+                        }
+  }
+        }
+      }
+  }
