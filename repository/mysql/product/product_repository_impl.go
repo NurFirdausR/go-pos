@@ -16,17 +16,9 @@ func NewProductRepository() ProductRepository {
 	return &ProductRepositoryImpl{}
 }
 
-// Name        string
-//
-//	PriceNet    int
-//	PriceGross  int
-//	StockQty    int
-//	Description string
-//	Image       string
-//	ExpDate     string
 func (r *ProductRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, product domain.Product) domain.Product {
-	SQL := "INSERT INTO products(name,price_net,price_gross,stock_qty,description,image,exp_date) VALUES(?,?,?,?,?,?)"
-	result, err := tx.ExecContext(ctx, SQL, product.Name, product.PriceNet, product.PriceGross, product.StockQty, product.Description, product.Image, product.ExpDate)
+	SQL := "INSERT INTO products(name,price_net,price_gross,stock_qty,description,image,exp_date,category_id,company_id) VALUES(?,?,?,?,?,?,?,?,?)"
+	result, err := tx.ExecContext(ctx, SQL, product.Name, product.PriceNet, product.PriceGross, product.StockQty, product.Description, product.Image, product.ExpDate, product.CategoryId, product.CompanyId)
 	helper.PanicIfError(err)
 	id, err := result.LastInsertId()
 	helper.PanicIfError(err)
@@ -35,9 +27,12 @@ func (r *ProductRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, product do
 
 }
 func (r *ProductRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, product domain.Product) domain.Product {
-	SQL := "UPDATE products SET name=?,price_net=?,price_gross=?,stock_qty=?,description=?,image=?,exp_date=? WHERE id=?"
-	_, err := tx.ExecContext(ctx, SQL, product.Name, product.PriceNet, product.PriceGross, product.StockQty, product.Description, product.Image, product.ExpDate, product.Id)
+	SQL := "UPDATE products SET name=?,price_net=?,price_gross=?,stock_qty=?,description=?,image=?,exp_date=?,category_id=?,company_id=? WHERE id=?"
+	product.ExpDate = helper.ConvertTime(product.ExpDate)
+	_, err := tx.ExecContext(ctx, SQL, product.Name, product.PriceNet, product.PriceGross, product.StockQty, product.Description, product.Image, product.ExpDate, product.CategoryId, product.CompanyId, product.Id)
 	helper.PanicIfError(err)
+	// fmt.Println("test")
+
 	return product
 }
 func (r *ProductRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, productId int) (domain.Product, error) {
@@ -47,11 +42,11 @@ func (r *ProductRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, produc
 	defer rows.Close()
 	product := domain.Product{}
 	if rows.Next() {
-		err := rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate)
+		err := rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate, &product.CategoryId, &product.CompanyId, &product.CreatedAt, &product.UpdatedAt)
 		helper.PanicIfError(err)
 		return product, nil
 	} else {
-		return product, errors.New("Product is not found")
+		return product, errors.New("product is not found")
 	}
 
 }
@@ -66,14 +61,15 @@ func (r *ProductRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domai
 	rows, err := tx.QueryContext(ctx, SQL)
 	helper.PanicIfError(err)
 	defer rows.Close()
-
 	var products []domain.Product
 	for rows.Next() {
 		product := domain.Product{}
-		err = rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate)
+		err = rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate, &product.CategoryId, &product.CompanyId, &product.CreatedAt, &product.UpdatedAt)
+
 		helper.PanicIfError(err)
 		products = append(products, product)
 	}
+
 	err = rows.Err()
 	helper.PanicIfError(err)
 	return products
