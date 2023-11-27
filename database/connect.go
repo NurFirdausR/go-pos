@@ -9,7 +9,7 @@ import (
 )
 
 func Connect() *sql.DB {
-	db, err := sql.Open("mysql", "root:Bismillah@123@tcp(127.0.0.1:3306)/golang_pos")
+	db, err := sql.Open("mysql", "root:Bismillah@123@tcp(127.0.0.1:3306)/golang_pos?parseTime=true")
 	helper.PanicIfError(err)
 
 	// Test the connection

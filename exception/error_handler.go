@@ -39,6 +39,7 @@ func validationError(w http.ResponseWriter, r *http.Request, err interface{}) bo
 		return false
 	}
 }
+
 func internalServerError(w http.ResponseWriter, r *http.Request, err interface{}) {
 	w.Header().Add("Content-Type", "Aplication/Json")
 	w.WriteHeader(http.StatusInternalServerError)
