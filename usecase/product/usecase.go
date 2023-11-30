@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/NurFirdausR/go-pos/domain"
+	product_web "github.com/NurFirdausR/go-pos/web/product"
 )
 
 type UseCase interface {
@@ -11,5 +12,5 @@ type UseCase interface {
 	FindAll(ctx context.Context) []domain.Product
 	Save(ctx context.Context, requset domain.Product) domain.Product
 	Delete(ctx context.Context, requset domain.Product)
-	Update(ctx context.Context, requset domain.Product) domain.Product
+	Update(ctx context.Context, requset product_web.ProductUpdateRequest) domain.Product
 }

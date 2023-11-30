@@ -27,9 +27,8 @@ func (r *ProductRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, product do
 
 }
 func (r *ProductRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, product domain.Product) domain.Product {
-	SQL := "UPDATE products SET name=?,price_net=?,price_gross=?,stock_qty=?,description=?,image=?,exp_date=?,category_id=?,company_id=? WHERE id=?"
-	product.ExpDate = helper.ConvertTime(product.ExpDate)
-	_, err := tx.ExecContext(ctx, SQL, product.Name, product.PriceNet, product.PriceGross, product.StockQty, product.Description, product.Image, product.ExpDate, product.CategoryId, product.CompanyId, product.Id)
+	SQL := "UPDATE products SET name=?,price_net=?,price_gross=?,stock_qty=?,description=?,image=?,exp_date=?,updated_at=?,category_id=?,company_id=? WHERE id=?"
+	_, err := tx.ExecContext(ctx, SQL, product.Name, product.PriceNet, product.PriceGross, product.StockQty, product.Description, product.Image, product.ExpDate, product.UpdatedAt, product.CategoryId, product.CompanyId, product.Id)
 	helper.PanicIfError(err)
 	// fmt.Println("test")
 
@@ -42,7 +41,7 @@ func (r *ProductRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, produc
 	defer rows.Close()
 	product := domain.Product{}
 	if rows.Next() {
-		err := rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate, &product.CategoryId, &product.CompanyId, &product.CreatedAt, &product.UpdatedAt)
+		err := rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate, &product.CreatedAt, &product.UpdatedAt, &product.CategoryId, &product.CompanyId)
 		helper.PanicIfError(err)
 		return product, nil
 	} else {
@@ -51,7 +50,7 @@ func (r *ProductRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, produc
 
 }
 func (r *ProductRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, product domain.Product) {
-	SQL := "DELETE * FROM products where id = ?"
+	SQL := "DELETE  FROM products where id = ?"
 	_, err := tx.ExecContext(ctx, SQL, product.Id)
 	helper.PanicIfError(err)
 }
@@ -64,7 +63,7 @@ func (r *ProductRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domai
 	var products []domain.Product
 	for rows.Next() {
 		product := domain.Product{}
-		err = rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate, &product.CategoryId, &product.CompanyId, &product.CreatedAt, &product.UpdatedAt)
+		err = rows.Scan(&product.Id, &product.Name, &product.PriceNet, &product.PriceGross, &product.StockQty, &product.Description, &product.Image, &product.ExpDate, &product.CreatedAt, &product.UpdatedAt, &product.CategoryId, &product.CompanyId)
 
 		helper.PanicIfError(err)
 		products = append(products, product)

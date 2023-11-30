@@ -4,10 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/NurFirdausR/go-pos/domain"
 	"github.com/NurFirdausR/go-pos/helper"
 	"github.com/NurFirdausR/go-pos/repository/mysql/product"
+	product_web "github.com/NurFirdausR/go-pos/web/product"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -40,7 +42,7 @@ func (usecase *ProductUseCase) Save(ctx context.Context, request domain.Product)
 
 }
 
-func (usecase *ProductUseCase) Update(ctx context.Context, request domain.Product) domain.Product {
+func (usecase *ProductUseCase) Update(ctx context.Context, request product_web.ProductUpdateRequest) domain.Product {
 	err := usecase.Validate.Struct(request)
 	helper.PanicIfError(err)
 
@@ -53,6 +55,19 @@ func (usecase *ProductUseCase) Update(ctx context.Context, request domain.Produc
 	if err != nil {
 		helper.PanicIfError(err)
 	}
+	currentTime := time.Now()
+	dateString := currentTime.Format("2006-01-02 15:04:05")
+
+	product.Name = request.Name
+	product.PriceNet = request.PriceNet
+	product.PriceGross = request.PriceGross
+	product.StockQty = request.StockQty
+	product.Description = request.Description
+	product.Image = request.Image
+	product.ExpDate = request.ExpDate
+	product.UpdatedAt = dateString
+	product.CategoryId = request.CategoryId
+	product.CompanyId = request.CompanyId
 	fmt.Println(product)
 	res := usecase.ProductRepository.Update(ctx, tx, product)
 	return res

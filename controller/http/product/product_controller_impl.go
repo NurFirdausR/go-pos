@@ -9,6 +9,7 @@ import (
 	"github.com/NurFirdausR/go-pos/helper"
 	"github.com/NurFirdausR/go-pos/model/web"
 	"github.com/NurFirdausR/go-pos/usecase/product"
+	product_web "github.com/NurFirdausR/go-pos/web/product"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -75,12 +76,12 @@ func (controller *productControllerImpl) Update(w http.ResponseWriter, r *http.R
 
 	// Mendekode body permintaan HTTP menjadi struktur domain.Product
 	decoder := json.NewDecoder(r.Body)
-	productUpdateRequest := domain.Product{}
+	productUpdateRequest := product_web.ProductUpdateRequest{}
 	err = decoder.Decode(&productUpdateRequest)
 	helper.PanicIfError(err)
 
 	productUpdateRequest.Id = id
-
+	// productUpdateRequest.ExpDate = helper.ConvertTime(productUpdateRequest.ExpDate)
 	productResponse := controller.ProductUsecase.Update(r.Context(), productUpdateRequest)
 
 	webResponse := web.WebResponse{
@@ -103,7 +104,7 @@ func (controller *productControllerImpl) Delete(w http.ResponseWriter, r *http.R
 
 	webResponse := web.WebResponse{
 		Code:   200,
-		Status: "OK",
+		Status: "Successfully!",
 	}
 
 	helper.WriteToResponseBody(w, webResponse)
