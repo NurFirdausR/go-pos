@@ -8,6 +8,7 @@ import (
 	"github.com/NurFirdausR/go-pos/database"
 	"github.com/NurFirdausR/go-pos/exception"
 	"github.com/NurFirdausR/go-pos/helper"
+	"github.com/NurFirdausR/go-pos/middleware"
 	authentication_repo "github.com/NurFirdausR/go-pos/repository/mysql/authentication"
 	product_repo "github.com/NurFirdausR/go-pos/repository/mysql/product"
 	authentication_usecase "github.com/NurFirdausR/go-pos/usecase/authentication"
@@ -20,7 +21,6 @@ import (
 func main() {
 	validate := validator.New()
 	db := database.Connect()
-
 	router := httprouter.New()
 
 	userRepo := authentication_repo.NewAuthenticationRepository()                          // Initialize repositories
@@ -31,14 +31,16 @@ func main() {
 	productUsecase := product_usecase.NewProductUsecase(productRepo, db, validate) // Initialize use cases
 	productController := product_controller.NewProductController(productUsecase)   // Initialize handlers
 
-	router.POST("/api/login", authController.LoginHandler)
-	router.POST("/api/register", authController.RegisterHandler)
+	router.POST("/login", authController.LoginHandler)
+	router.POST("/register", authController.RegisterHandler)
+	router.GET("/logout", authController.LogoutHandler)
 
-	router.GET("/api/products", productController.FindAll)
-	router.GET("/api/products/:productId", productController.FindById)
-	router.POST("/api/products", productController.Save)
-	router.PUT("/api/products/:productId", productController.Update)
-	router.DELETE("/api/products/:productId", productController.Delete)
+	router.GET("/api/products", middleware.JWTMiddleware(productController.FindAll))
+	router.GET("/api/products/:productId", middleware.JWTMiddleware(productController.FindById))
+	router.POST("/api/products", middleware.JWTMiddleware(productController.Save))
+	router.PUT("/api/products/:productId", middleware.JWTMiddleware(productController.Update))
+	router.DELETE("/api/products/:productId", middleware.JWTMiddleware(productController.Delete))
+
 	router.PanicHandler = exception.ErrorHandler
 	server := http.Server{
 		Addr:    "localhost:8080",

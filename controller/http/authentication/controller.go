@@ -9,4 +9,5 @@ import (
 type AuthController interface {
 	LoginHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	RegisterHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params)
+	LogoutHandler(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 }
