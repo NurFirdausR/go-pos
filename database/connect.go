@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/NurFirdausR/go-pos/helper"
@@ -19,6 +20,7 @@ func Connect() *sql.DB {
 		// fmt.Println("Error:", err)
 		// return
 	}
+	fmt.Println("Databse CONNECT SUCCESSFULLY")
 
 	// See "Important settings" section.
 	db.SetConnMaxLifetime(time.Minute * 3)

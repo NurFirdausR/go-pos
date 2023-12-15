@@ -10,7 +10,7 @@ import (
 type UseCase interface {
 	FindById(ctx context.Context, productId int) (domain.Product, error)
 	FindAll(ctx context.Context) []domain.Product
-	Save(ctx context.Context, requset domain.Product) domain.Product
-	Delete(ctx context.Context, requset domain.Product)
-	Update(ctx context.Context, requset product_web.ProductUpdateRequest) domain.Product
+	Save(ctx context.Context, request domain.Product) domain.Product
+	Delete(ctx context.Context, request domain.Product)
+	Update(ctx context.Context, request product_web.ProductUpdateRequest) domain.Product
 }
