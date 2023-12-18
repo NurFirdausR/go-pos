@@ -37,3 +37,14 @@ func (usecase *CategoryUsecase) Save(ctx context.Context, request domain.Categor
 
 	return res
 }
+
+func (usecase *CategoryUsecase) FindById(ctx context.Context, categoryId int) (domain.Category, error) {
+	tx, err := usecase.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	categorys, err := usecase.CategoryRepository.FindById(ctx, tx, categoryId)
+	helper.PanicIfError(err)
+	return categorys, nil
+
+}

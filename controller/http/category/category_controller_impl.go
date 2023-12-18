@@ -3,6 +3,7 @@ package category
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/NurFirdausR/go-pos/domain"
 	"github.com/NurFirdausR/go-pos/helper"
@@ -37,5 +38,20 @@ func (controller *CategoryControllerImpl) Save(w http.ResponseWriter, r *http.Re
 	}
 
 	// Menulis respon ke body HTTP
+	helper.WriteToResponseBody(w, webResponse)
+}
+
+func (controller *CategoryControllerImpl) FindById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	categoryId := p.ByName("categoryId")
+	id, err := strconv.Atoi(categoryId)
+	helper.PanicIfError(err)
+
+	categoryResponses, err := controller.CategoryUsecase.FindById(r.Context(), id)
+	helper.PanicIfError(err)
+	webResponse := web.WebResponse{
+		Code:   200,
+		Status: "Success",
+		Data:   categoryResponses,
+	}
 	helper.WriteToResponseBody(w, webResponse)
 }

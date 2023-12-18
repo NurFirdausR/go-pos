@@ -49,6 +49,7 @@ func main() {
 	router.DELETE("/api/products/:productId", middleware.JWTMiddleware(productController.Delete))
 
 	router.POST("/api/categories", middleware.JWTMiddleware(categoryController.Save))
+	router.GET("/api/categories/:categoryId", middleware.JWTMiddleware(categoryController.FindById))
 
 	router.PanicHandler = exception.ErrorHandler
 	server := http.Server{
