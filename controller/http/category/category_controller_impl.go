@@ -2,6 +2,7 @@ package category
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/NurFirdausR/go-pos/helper"
 	"github.com/NurFirdausR/go-pos/model/web"
 	"github.com/NurFirdausR/go-pos/usecase/category"
+	category_web "github.com/NurFirdausR/go-pos/web/category"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -52,6 +54,26 @@ func (controller *CategoryControllerImpl) FindById(w http.ResponseWriter, r *htt
 		Code:   200,
 		Status: "Success",
 		Data:   categoryResponses,
+	}
+	helper.WriteToResponseBody(w, webResponse)
+}
+func (controller *CategoryControllerImpl) Update(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	categoryId := p.ByName("categoryId")
+	id, err := strconv.Atoi(categoryId)
+	helper.PanicIfError(err)
+
+	decoder := json.NewDecoder(r.Body)
+	categoryUpdateRequest := category_web.UpdateCategoryRequest{}
+	err = decoder.Decode(&categoryUpdateRequest)
+	helper.PanicIfError(err)
+
+	categoryUpdateRequest.Id = id
+	categoryResponse := controller.CategoryUsecase.Update(r.Context(), categoryUpdateRequest)
+	fmt.Println("test")
+	webResponse := web.WebResponse{
+		Code:   200,
+		Status: "Success",
+		Data:   categoryResponse,
 	}
 	helper.WriteToResponseBody(w, webResponse)
 }

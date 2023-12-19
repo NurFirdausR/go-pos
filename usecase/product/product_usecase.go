@@ -3,7 +3,6 @@ package product
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/NurFirdausR/go-pos/domain"
@@ -52,9 +51,7 @@ func (usecase *ProductUseCase) Update(ctx context.Context, request product_web.P
 	defer helper.CommitOrRollback(tx)
 
 	product, err := usecase.ProductRepository.FindById(ctx, tx, request.Id)
-	if err != nil {
-		helper.PanicIfError(err)
-	}
+	helper.PanicIfError(err)
 	currentTime := time.Now()
 	dateString := currentTime.Format("2006-01-02 15:04:05")
 
@@ -68,7 +65,6 @@ func (usecase *ProductUseCase) Update(ctx context.Context, request product_web.P
 	product.UpdatedAt = dateString
 	product.CategoryId = request.CategoryId
 	product.CompanyId = request.CompanyId
-	fmt.Println(product)
 	res := usecase.ProductRepository.Update(ctx, tx, product)
 	return res
 }

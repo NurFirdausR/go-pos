@@ -9,4 +9,5 @@ import (
 type CategoryController interface {
 	Save(w http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	FindById(w http.ResponseWriter, r *http.Request, p httprouter.Params)
+	Update(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 }

@@ -41,3 +41,11 @@ func (r *CategoryRepostoryImpl) FindById(ctx context.Context, tx *sql.Tx, catego
 	}
 
 }
+
+func (r *CategoryRepostoryImpl) Update(ctx context.Context, tx *sql.Tx, category domain.Category) domain.Category {
+	SQL := "UPDATE categories SET name=?, logo=?  WHERE id=?"
+	_, err := tx.ExecContext(ctx, SQL, category.Name, category.Logo, category.Id)
+	helper.PanicIfError(err)
+	return category
+
+}

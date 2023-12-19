@@ -3,10 +3,13 @@ package category
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"time"
 
 	"github.com/NurFirdausR/go-pos/domain"
 	"github.com/NurFirdausR/go-pos/helper"
 	"github.com/NurFirdausR/go-pos/repository/mysql/category"
+	category_web "github.com/NurFirdausR/go-pos/web/category"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -47,4 +50,25 @@ func (usecase *CategoryUsecase) FindById(ctx context.Context, categoryId int) (d
 	helper.PanicIfError(err)
 	return categorys, nil
 
+}
+
+func (usecase *CategoryUsecase) Update(ctx context.Context, request category_web.UpdateCategoryRequest) domain.Category {
+	err := usecase.Validate.Struct(request)
+	helper.PanicIfError(err)
+
+	tx, err := usecase.DB.Begin()
+	helper.PanicIfError(err)
+
+	defer helper.CommitOrRollback(tx)
+	category, err := usecase.CategoryRepository.FindById(ctx, tx, request.Id)
+	helper.PanicIfError(err)
+	currentTime := time.Now()
+	dateString := currentTime.Format("2006-01-02 15:04:05")
+
+	category.Name = request.Name
+	category.Logo = request.Logo
+	category.UpdatedAt = dateString
+	fmt.Println(category)
+	res := usecase.CategoryRepository.Update(ctx, tx, category)
+	return res
 }

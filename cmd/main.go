@@ -50,6 +50,7 @@ func main() {
 
 	router.POST("/api/categories", middleware.JWTMiddleware(categoryController.Save))
 	router.GET("/api/categories/:categoryId", middleware.JWTMiddleware(categoryController.FindById))
+	router.PUT("/api/categories/:categoryId", middleware.JWTMiddleware(categoryController.Update))
 
 	router.PanicHandler = exception.ErrorHandler
 	server := http.Server{
